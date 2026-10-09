@@ -1,6 +1,6 @@
 # Sonora
 
-Sonora is a music player for the songs on your device, with a customizable listening space and a YouTube Music discovery page.
+Sonora is a music player for the songs on your device, with a customizable listening space and a YouTube Music discovery page. OPEN : https://savage404e.github.io/sonora/ | SELECT MUSIC FOLDER & ENJOY !
 
 ## Preview
 
