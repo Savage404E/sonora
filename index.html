@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f8fc">
+  <meta name="description" content="A beautiful private music player for the songs on your computer.">
+  <title>Sonora — your music, your space</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <input id="folder-input" class="visually-hidden" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac,.opus,.wma" webkitdirectory directory multiple aria-label="Choose a music folder">
+  <input id="files-input" class="visually-hidden" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac,.opus,.wma" multiple aria-label="Choose audio files">
+  <canvas id="liquid-background" class="liquid-background" aria-hidden="true" hidden></canvas>
+  <canvas id="matrix-background" class="matrix-background" aria-hidden="true" hidden></canvas>
+
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#" aria-label="Sonora home"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>sonora<span class="brand-period">.</span></a>
+
+      <span class="nav-caption">MENU</span>
+      <nav class="main-nav">
+        <button class="nav-link youtube-link" data-view="youtube"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12s0-3.3-.4-4.9a2.6 2.6 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.6 2.6 0 0 0-1.8 1.8C2 8.7 2 12 2 12s0 3.3.4 4.9a2.6 2.6 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.6 2.6 0 0 0 1.8-1.8C22 15.3 22 12 22 12Z"/><path d="m10 9 5 3-5 3z"/></svg>YouTube Music</button>
+        <button class="nav-link active" data-view="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1z"/></svg>Discover</button>
+        <button class="nav-link" data-view="favorites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>Liked songs<span id="favorite-count" class="nav-count"></span></button>
+      </nav>
+      <button id="change-mode-button" class="change-mode-button sidebar-mode-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.64 5.64l1.42 1.42m9.88 9.88 1.42 1.42m0-12.72-1.42 1.42m-9.88 9.88-1.42 1.42"/><circle cx="12" cy="12" r="4"/></svg>CHANGE MODE</button>
+
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="eye-tracking" id="eye-tracking" aria-hidden="true">
+          <span class="tracking-eye"><span class="tracking-pupil"></span><span class="tracking-glint"></span></span>
+          <span class="tracking-eye"><span class="tracking-pupil"></span><span class="tracking-glint"></span></span>
+        </div>
+        <div class="header-social-links" aria-label="Social links">
+          <a href="https://github.com/Savage404E" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile" title="GitHub">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.56.1.76-.24.76-.54v-2.1c-3.1.68-3.76-1.31-3.76-1.31-.51-1.3-1.24-1.65-1.24-1.65-1.01-.69.08-.68.08-.68 1.12.08 1.7 1.15 1.7 1.15.99 1.69 2.6 1.2 3.23.92.1-.72.39-1.2.7-1.48-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.22 1.15-3-.12-.28-.5-1.42.11-2.96 0 0 .94-.3 3.06 1.15a10.65 10.65 0 0 1 5.57 0c2.12-1.44 3.05-1.15 3.05-1.15.61 1.54.23 2.68.11 2.96.72.78 1.15 1.78 1.15 3 0 4.29-2.61 5.23-5.1 5.51.4.35.75 1.03.75 2.08v3.08c0 .3.2.65.77.54A11.1 11.1 0 0 0 12 .9Z"/></svg>
+          </a>
+          <a href="https://discord.gg/besavage" target="_blank" rel="noopener noreferrer" aria-label="Join Discord server" title="Discord">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.27 5.34a18.2 18.2 0 0 0-4.5-1.39.07.07 0 0 0-.08.04c-.2.36-.42.84-.58 1.22a16.8 16.8 0 0 0-5.04 0c-.16-.39-.38-.86-.59-1.22a.08.08 0 0 0-.08-.04 18.15 18.15 0 0 0-4.5 1.39.07.07 0 0 0-.03.03C.99 9.62.21 13.77.6 17.87c0 .02.01.04.03.05a18.3 18.3 0 0 0 5.52 2.78.08.08 0 0 0 .09-.03c.43-.59.82-1.22 1.15-1.87a.08.08 0 0 0-.04-.11 12.1 12.1 0 0 1-1.73-.83.08.08 0 0 1-.01-.13c.12-.09.23-.18.34-.27a.08.08 0 0 1 .08-.01c3.63 1.66 7.56 1.66 11.15 0a.08.08 0 0 1 .08.01c.11.09.22.19.34.27a.08.08 0 0 1-.01.13c-.55.33-1.13.61-1.73.83a.08.08 0 0 0-.04.11c.34.65.72 1.28 1.15 1.87a.08.08 0 0 0 .09.03 18.24 18.24 0 0 0 5.53-2.78.08.08 0 0 0 .03-.05c.47-4.74-.79-8.85-3.35-12.5a.06.06 0 0 0-.03-.03ZM8.02 14.98c-1.09 0-1.99-1-1.99-2.22s.88-2.22 1.99-2.22 2 .99 1.99 2.22c0 1.23-.88 2.22-1.99 2.22Zm7.96 0c-1.09 0-1.99-1-1.99-2.22s.88-2.22 1.99-2.22 2 .99 1.99 2.22c0 1.23-.87 2.22-1.99 2.22Z"/></svg>
+          </a>
+        </div>
+        <div class="topbar-actions"><span class="local-indicator"><span></span> YOUR MUSIC, YOUR DEVICE</span><button id="top-folder-button" class="top-folder-button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M3 10h18"/></svg>Choose folder</button></div>
+      </header>
+
+      <div class="content-scroll">
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy"><span class="eyebrow"><span class="eyebrow-dot"></span> A BETTER HOME FOR YOUR MUSIC</span><h1 id="hero-title">Your sound.<br><span>Your kind of place.</span></h1><p>All the songs you already love, together at last. No uploads, no algorithms—just press play.</p></div>
+          <div class="hero-art" aria-hidden="true"><div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div><div class="art-disc"><div class="disc-label"><span class="disc-bars"><i></i><i></i><i></i><i></i><i></i></span></div></div><div class="float-note note-one">♪</div><div class="float-note note-two">♫</div><div class="sound-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="art-caption">MADE FOR YOUR MOMENTS</div></div>
+        </section>
+
+        <section id="mode-view" class="mode-view" aria-labelledby="mode-page-title" tabindex="-1" hidden>
+          <header class="mode-page-heading">
+            <div><span class="mode-eyebrow">MAKE IT YOURS</span><h1 id="mode-page-title">Find your frequency.</h1><p>Explore the moods. Choose the color that feels like your music.</p></div>
+            <button id="mode-back-button" class="mode-back-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>Back to your music</button>
+          </header>
+          <div class="mode-stage" aria-label="Theme selector">
+            <div id="mode-wheel-items" class="mode-wheel-items"></div>
+            <section id="mode-preview" class="mode-preview" aria-live="polite" aria-label="Selected mode preview">
+              <div id="mode-preview-art" class="mode-preview-art"><span id="mode-preview-glyph" class="mode-preview-glyph"></span><span class="mode-preview-orbit"></span><span class="mode-preview-record"></span><span class="mode-preview-label">SONORA · COLOR STUDY</span></div>
+              <div class="mode-preview-copy"><span id="mode-preview-kicker" class="mode-preview-kicker">YOUR NEXT ATMOSPHERE</span><strong id="mode-preview-name"></strong><span id="mode-preview-description"></span></div>
+              <button id="mode-preview-apply" class="mode-apply-button mode-preview-apply" type="button">Use this mode <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+            </section>
+          </div>
+          <footer class="mode-picker-footer"><span id="mode-count" class="mode-count"></span><div class="mode-wheel-arrows"><button id="mode-previous" class="mode-wheel-arrow" type="button" aria-label="Previous mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><button id="mode-next" class="mode-wheel-arrow" type="button" aria-label="Next mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button></div><span class="mode-wheel-hint">DRAG · TAP · OR USE ARROWS</span><span class="mode-page-note">Your choice is saved on this device.</span></footer>
+        </section>
+
+        <section id="youtube-view" class="youtube-view" aria-labelledby="youtube-title" hidden>
+          <header class="youtube-heading">
+            <div class="youtube-heading-copy"><span class="youtube-eyebrow"><span class="youtube-live-dot"></span> MUSIC FROM AROUND THE WORLD</span><h1 id="youtube-title">Fresh sounds.<br><span>Right here, right now.</span></h1><p>Discover music and open your picks on YouTube Music.</p></div>
+            <div class="youtube-heading-art" aria-hidden="true"><div class="youtube-heading-disc"><span>♫</span></div><i></i><i></i><i></i><i></i><span class="youtube-heading-spark">✳</span></div>
+          </header>
+          <div class="youtube-tools"><div><span class="section-kicker">YOUR NEXT FAVORITE IS OUT THERE</span><h2>Discover music</h2></div><form id="youtube-search-form" class="youtube-search-form" role="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="youtube-search-input" type="search" placeholder="Search artists or songs..." aria-label="Search YouTube music"><button type="submit" aria-label="Search YouTube">Search</button></form></div>
+          <div class="youtube-discovery-collections">
+            <section class="youtube-collection-section" aria-labelledby="youtube-artists-title">
+              <div class="youtube-collection-heading"><div><span class="section-kicker">MEET THE MUSIC MAKERS</span><h2 id="youtube-artists-title">Artist profiles</h2></div></div>
+              <div id="youtube-artists-grid" class="youtube-artists-grid"></div>
+            </section>
+            <section class="youtube-collection-section" aria-labelledby="youtube-playlists-title">
+              <div class="youtube-collection-heading"><div><span class="section-kicker">SOUNDTRACKS FOR RIGHT NOW</span><h2 id="youtube-playlists-title">Playlists</h2></div></div>
+              <div id="youtube-playlists-grid" class="youtube-playlists-grid"></div>
+            </section>
+          </div>
+          <section id="youtube-results-section" class="youtube-results-section" aria-labelledby="youtube-results-title"><div class="youtube-results-heading"><div><span class="section-kicker">SOMETHING GOOD IS ALWAYS PLAYING</span><h2 id="youtube-results-title">Trending music</h2></div><div class="youtube-results-actions"><button id="youtube-show-trending" class="youtube-show-trending" type="button" hidden>Show trending</button><span id="youtube-region-label" class="youtube-region-label">POPULAR RIGHT NOW</span></div></div><div id="youtube-status" class="youtube-status" role="status" aria-live="polite">Choose YouTube Music to load the latest music videos.</div><div id="youtube-results-grid" class="youtube-results-grid"></div></section>
+        </section>
+
+        <section id="quick-picks" class="quick-picks" aria-labelledby="quick-picks-title" hidden>
+          <div class="quick-picks-heading"><div><span class="section-kicker">A LITTLE TASTE OF YOUR LIBRARY</span><h2 id="quick-picks-title">Meet your music in a new way.</h2></div><span class="quick-picks-note">YOUR COLLECTION, IN ROTATION</span></div>
+          <div id="music-wheel" class="music-wheel">
+            <div class="wheel-feature">
+              <span class="wheel-feature-kicker">ON YOUR TURNTABLE <span>✳</span></span>
+              <button id="wheel-feature-play" class="wheel-cover-button" type="button" aria-label="Play selected track">
+                <span id="wheel-feature-cover" class="wheel-feature-cover"></span>
+                <span class="wheel-cover-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8 5 12 7-12 7z"/></svg></span>
+              </button>
+              <span id="wheel-track-number" class="wheel-track-number">01 / 01</span>
+              <span class="wheel-feature-status"><span></span> <span id="wheel-track-status">READY WHEN YOU ARE</span></span>
+            </div>
+            <div class="wheel-picker">
+              <div class="wheel-picker-heading"><span>TAKE YOUR PICK</span><span id="wheel-album-name">LOCAL FAVORITES</span></div>
+              <div id="quick-picks-grid" class="music-wheel-list" role="group" aria-label="Choose a song from your music collection"></div>
+              <div class="wheel-picker-bottom">
+                <span id="wheel-position-label">01 <i>—</i> 01</span>
+                <div class="wheel-indicators" id="wheel-indicators" aria-label="Track position"></div>
+                <div class="wheel-navigation">
+                  <button id="wheel-previous" class="wheel-nav-button" type="button" aria-label="Previous track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+                  <button id="wheel-next" class="wheel-nav-button" type="button" aria-label="Next track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6 6-6-6"/></svg></button>
+                </div>
+              </div>
+            </div>
+            <span class="wheel-watermark" aria-hidden="true">SOUND & SOUL · SIDE A</span>
+          </div>
+        </section>
+
+        <section id="library-section" class="library-section">
+          <div class="section-heading"><div><span class="section-kicker" id="section-kicker">YOUR COLLECTION</span><h2 id="section-title">Made for your ears</h2><p id="section-description">Your next favorite is already in your library.</p></div><label class="search-box" id="search-box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="search-input" type="search" placeholder="Find a song..." aria-label="Search your music"><kbd>/</kbd></label></div>
+          <div id="folder-location" class="folder-location" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M3 10h18"/></svg><span id="folder-name"></span><button id="change-folder-button">Change folder</button></div>
+          <div id="empty-state" class="empty-state"><div class="empty-message"><div class="empty-illustration"><div class="empty-vinyl"><div></div></div><span class="empty-spark spark-a">✳</span><span class="empty-spark spark-b">♪</span></div><span class="empty-kicker">THE BEST PLAYLIST IS YOURS</span><h3>Your music, in its element.</h3><p>Pick the folder where your music lives. Your browser will turn it into a beautiful, private listening room.</p><button id="empty-folder-button" class="text-button">Bring in your music <span>→</span></button></div><div class="empty-cover-art" aria-hidden="true"><div class="floating-cover cover-sun"><span class="cover-label">01 — GOLDEN HOUR</span><span class="cover-glyph">◒</span><span class="cover-word">slow<br>down.</span></div><div class="floating-cover cover-night"><span class="cover-label">02 — AFTER HOURS</span><span class="cover-glyph">☾</span><span class="cover-word">stay<br>a while.</span></div><div class="floating-cover cover-moss"><span class="cover-label">03 — ON REPEAT</span><span class="cover-glyph">♫</span><span class="cover-word">feel<br>everything.</span></div><span class="cover-art-caption">YOUR COLLECTION, YOUR RULES</span></div></div>
+          <div id="song-list-wrap" class="song-list-wrap" hidden><div class="list-header"><span class="list-number">#</span><span>TITLE</span><span>ALBUM</span><span>FOLDER</span><span class="duration-heading"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span></span></div><div id="song-list" class="song-list" role="list"></div></div>
+        </section>
+        <footer class="page-footer"><span>Made with <span class="footer-heart">♥</span> for music people</span><span>No uploads. No accounts. Just your songs.</span></footer>
+      </div>
+    </main>
+
+    <footer class="player-bar" id="player-bar" aria-label="Music player">
+      <div class="now-playing"><div id="player-cover" class="player-cover"><span>♫</span></div><div class="now-playing-info"><strong id="player-title">Pick something to play</strong><span id="player-artist">Your library is just getting started</span></div><button id="player-like" class="player-like icon-button" aria-label="Like song" title="Like song" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg></button></div>
+      <div class="player-center"><div class="player-controls"><button id="shuffle-button" class="icon-button control-secondary" aria-label="Shuffle" title="Shuffle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m18 14 4 4-4 4M18 2l4 4-4 4M2 18h2.5a5 5 0 0 0 4-2l7-8a5 5 0 0 1 4-2H22M2 6h2.5a5 5 0 0 1 4 2l1 1m4 6 1 1a5 5 0 0 0 4 2H22"/></svg></button><button id="previous-button" class="icon-button skip-button" aria-label="Previous song"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14m13-14L8 12l11 7z"/></svg></button><button id="play-button" class="play-button" aria-label="Play"><svg id="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 12 7-12 7z"/></svg></button><button id="next-button" class="icon-button skip-button" aria-label="Next song"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M5 5l11 7-11 7z"/></svg></button><button id="repeat-button" class="icon-button control-secondary" aria-label="Repeat off" title="Repeat off"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></svg></button></div><div class="seek-row"><span id="current-time" class="time-label">0:00</span><input id="seek-slider" class="range-slider seek-slider" type="range" min="0" max="1000" value="0" aria-label="Song progress"><span id="total-time" class="time-label">0:00</span></div></div>
+      <div class="player-extras"><button id="volume-button" class="icon-button volume-icon" aria-label="Mute" title="Mute"><svg id="volume-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13"/></svg></button><input id="volume-slider" class="range-slider volume-slider" type="range" min="0" max="100" value="78" aria-label="Volume"><button id="queue-button" class="icon-button queue-icon" aria-label="Show my music files" title="My folders"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="3"/></svg></button></div>
+    </footer>
+  </div>
+  <audio id="audio-element" preload="metadata"></audio>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
